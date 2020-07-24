@@ -2,35 +2,33 @@
 #
 # entrees
 #
-# $1 config_dir : le chemin vers le repertoire du depot qui contient le fichier settings.ini
+# - $1 install_dir : le repertoire d'installation des application
+# - $2 repo_name : le depot demandé (ex: UsersHub)
 
-set -x
+[ "$install_debug" = "1" ] && set -x
+set -e
 
-. settings.ini
+install_dir=$1
+repo_name=$2
 
-config_dir=$1
+[ -z $repo_name ] && echo init_config pb_arguments && exit 1
 
-[ ! -d $config_dir ] && echo init_config le repertoire est mal renseigné $config_dir && exit 1
+#PATCH UH
+pg_port=$db_port
+url_application=${my_url}usershub
+list_var_patch="pg_port url_application"
 
-# - config
-rm -f config.py
-cp $config_dir/settings.ini.sample $config_dir/settings.ini
-for var in \
-db_host \
-db_port \
-db_name \
-user_pg \
-user_pg_pass
+
+repo_config_dir_var_name=${repo_name}_config_dir
+repo_config_dir=${!repo_config_dir_var_name}
+
+abs_config_dir=$install_dir/$repo_name/$repo_config_dir
+
+rm -f $abs_config_dir/config.py
+cp $abs_config_dir/settings.ini.sample $abs_config_dir/settings.ini
+for var in $(grep = ./settings.ini | cut -d = -f1) ${list_var_patch}
 do  
-    sed -i -e "s/^${var}=.*/${var}=${!var}/" $config_dir/settings.ini   
+    echo $var
+    sed -i -e "s|^${var}=.*|${var}=${!var}|" $abs_config_dir/settings.ini   
 done
-
-# PATCH GN
-sed -i -e "s|^my_url=.*|my_url=${my_url}|" $config_dir/settings.ini   
-
-
-# patch UH
-sed -i -e "s/^pg_port=.*/pg_port=${db_port}/" $config_dir/settings.ini   
-
-
-cat $config_dir/settings.ini | grep my_url
+cat $abs_config_dir/settings.ini

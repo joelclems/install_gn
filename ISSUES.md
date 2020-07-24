@@ -1,0 +1,5 @@
+- mod_pyth dans install_all.sh
+- pg_host dans usershub
+- repertoires config et install homogènes
+- TaxHub nano
+- - servername localhost plein de fois

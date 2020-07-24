@@ -4,16 +4,7 @@ db_name=xxx
 user_pg=xxx
 user_pg_pass=xxx
 
-GeoNature_org='PNX-SI'
-GeoNature_branch='master'
-GeoNature_branch=2.4.1
+# important / à la fin
+my_url="http://localhost/"
 
-TaxHub_org='PNX-SI'
-TaxHub_branch='master'
-TaxHub_branch=1.7.2
-
-UsersHub_org='PNX-SI'
-UsersHub_branch='master'
-UsersHub_branch=2.1.2
-
-depots=(TaxHub UsersHub GeoNature)
+install_debug=0

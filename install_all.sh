@@ -1,20 +1,33 @@
 # script principal
 # lance l'installation des applis
+#
 # la configuration est définie dans le ficher settings.ini
 #
 # entrees
 #
 # - $1 install_dir : le repertoire d'installation des application
 
-set -x
+# sudo apt-get install -y apache2 libapache2-mod-python libapache2-mod-wsgi
+
+[ "$install_debug" = "1" ] && set -x
+set -e
 
 [ ! -f ./settings.ini ] && echo "Veuillez copier et renseigner le fichier settings.ini"
 
+. ./repositories.ini
 . ./settings.ini
+
+# on met les variables des fichiers repositories.ini et settings.ini en global
+for var in $(cat repositories.ini settings.ini |  grep = | cut -d = -f1)
+do
+export ${var}
+done
+
+[ "$install_debug" = "1" ] && set -x
 
 install_dir=$1
 
-[ ! -d $install_dir ] && echo "install_all : Le repertoire d'installation n'est pas specifié" && exit 1;
+[ -z $install_dir ] && echo "install_all : Le repertoire d'installation n'est pas specifié" && exit 1;
 
 # creation au besoin du repertoire d'installation
 mkdir -p $install_dir
@@ -25,10 +38,8 @@ mkdir -p $install_dir
 echo depots $depots
 
 # installation des depots
-for depot_name in ${depots}
+for repo_name in ${depots}
 do 
-depot_org_var_name=${depot_name}_org
-depot_branch_var_name=${depot_name}_branch
-./install_depo.sh $install_dir ${!depot_org_var_name} $depot_name ${!depot_branch_var_name}
+./install_repository.sh $install_dir $repo_name
 done
 
