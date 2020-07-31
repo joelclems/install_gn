@@ -24,7 +24,6 @@ repo_org=${!repo_org_var_name}
 repo_url=https://github.com/$repo_org/$repo_name.git
 
 # si le repertoire n'est pas existe, on clone le depot 
-echo dir $install_dir/$repo_name [ ! -d $install_dir/$repo_name ]
 if [ ! -d $install_dir/$repo_name ]
 then 
     git clone $repo_url $install_dir/$repo_name -b $repo_branch
