@@ -66,6 +66,7 @@ EOF
         sudo a2ensite ${repo_alias}
         sudo a2enmod proxy
         sudo a2enmod proxy_http
+        sudo service apache2 restart
     fi
 
 }
