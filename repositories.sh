@@ -73,9 +73,11 @@ function getRepository() {
         echo " - pull repository ${repo_org}/${repo_dash_name} and set branch ${repo_branch}"
         path_cur=$(pwd)
         cd ${repo_dir}
-        git co master -q
-        git pull -q
-        git co ${branch} -q
+        options="-q"
+
+        git co master ${options}
+        git pull ${options}
+        git co ${repo_branch} ${options}
         cd ${path_cur}
     fi
 }
