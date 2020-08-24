@@ -66,6 +66,7 @@ function getRepository() {
     # if directory does not exist : git clone
     if [ ! -d ${repo_dir} ]; then
         echo " - clone repository ${repo_org}/${repo_dash_name} from ${repo_url} and set branch ${repo_branch}"
+        echo git clone ${repo_url} ${repo_dir} -b ${repo_branch} -q
         git clone ${repo_url} ${repo_dir} -b ${repo_branch} -q
 
     # if directory exists : git pull and git co
@@ -76,7 +77,7 @@ function getRepository() {
         options="-q"
 
         git co master ${options}
-        git pull ${options}
+        git pull ${options} --all
         git co ${repo_branch} ${options}
         cd ${path_cur}
     fi
@@ -93,6 +94,11 @@ function setRepositoryConfig() {
     fi
 
     getRepositoryOptions ${repo_name}
+
+    if [ ! -z "${repo_module_path}" ]; then 
+        return 0
+    fi
+
 
     install_dir=$1
     repo_name=$2
@@ -137,8 +143,8 @@ function installGeneric() {
 
     getRepositoryOptions ${repo_name}
 
-    repo_install_dir_abs=${install_dir}/${repo_dash_name}/${repo_install_dir}
     path_cur=$(pwd)
+    repo_install_dir_abs=${install_dir}/${repo_dash_name}/${repo_install_dir}
     cd $repo_install_dir_abs
     install_file="./install_${type_install}.sh"
     if [ -f ${install_file} ]; then
@@ -169,6 +175,11 @@ function installRepository() {
         cd $install_dir/GeoNature
         source backend/venv/bin/activate
         geonature install_gn_module $module_dir $repo_module_path
+
+        if [ "${repo_name}" = "gn_module_monitoring" ]; then 
+            flask monitorings install $install_dir/gn_module_monitoring/contrib/test test
+        fi
+
 
     else 
         installGeneric $install_dir $repo_name env
