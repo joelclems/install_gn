@@ -76,9 +76,13 @@ function getRepository() {
         cd ${repo_dir}
         options="-q"
 
-        git co master ${options}
-        git pull ${options} --all
         git co ${repo_branch} ${options}
+
+        if [ "$(git show-ref --verify refs/heads/${repo_name})" ]
+        then  
+            git pull ${options}
+        fi   
+
         cd ${path_cur}
     fi
 }
